@@ -1,5 +1,5 @@
 {
-  "name": "csv_to_json",
+  "name": "html_to_json",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

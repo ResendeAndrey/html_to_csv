@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import Pagination from "../Pagination";
-import { TableSC, TableTD, TableTH, TableTR } from "./styled";
+import { BTNDownload, TableSC, TableTD, TableTH, TableTR } from "./styled";
 
 export interface ICSVJSONProps {
   act_symbol: string,
@@ -45,9 +45,41 @@ const Table = ({data}: ITableData) => {
     alert(`you are clicked in ${item.company_name}`)
   }
 
+  const downloadCSV = useCallback((filename: string, csv: string) => {
+    let csvFile = new Blob([csv], {type: 'text/csv'})
+    let dlBtn = document.createElement("a")
+
+    dlBtn.download = filename
+    dlBtn.href = window.URL.createObjectURL(csvFile)
+    dlBtn.style.display = "none";
+    document.body.appendChild(dlBtn);
+    dlBtn.click();
+  },[])
+
+
+  const convertHTMLtoCSV = useCallback((filename: string) => {
+    const csv = []
+
+    const table = document.querySelectorAll("table tr")
+
+    for (let i = 0; i < table.length; i++){
+      var row = [], cols = table[i].querySelectorAll('td, th')
+      for(let k =0; k < cols.length; k++) {
+        row.push('"' + cols[k].textContent + '"')
+      }
+      csv.push(row.join(','))
+    }
+
+    downloadCSV(filename, csv.join("\n"))
+  },[downloadCSV])
+
+
+
+
 
   return (
     <>
+     <BTNDownload onClick={() => convertHTMLtoCSV('Server_Data')}>Download table as CSV file</BTNDownload>
     <TableSC>
       <thead>
          <TableTR>
